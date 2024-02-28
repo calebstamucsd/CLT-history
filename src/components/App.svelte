@@ -1,7 +1,30 @@
 <script>
 import Scroller from "@sveltejs/svelte-scroller";
+import * as d3 from 'd3';
+import LLN from "./LLN.svelte"
+import { onMount } from 'svelte';
 
 let count, index, offset, progress;
+
+let LLN_sec, height_LLN, width_LLN
+
+onMount(() => {
+        // Update dimensions when the component is mounted
+        width_LLN = LLN_sec.clientWidth;
+        height_LLN = LLN_sec.clientHeight;
+
+        // Update dimensions when the window is resized
+        const updateDimensions = () => {
+            width_LLN = LLN_sec.clientWidth;
+            height_LLN = LLN_sec.clientHeight;
+        };
+
+        window.addEventListener('resize', updateDimensions);
+
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+        };
+    });
 </script>
 
 <Scroller
@@ -13,8 +36,8 @@ let count, index, offset, progress;
   bind:offset
   bind:progress
 >
-<div class="background" slot="background">
 
+<div class="background" slot="background">
   <div class="progress-bars">
     <p>current section: <strong>{index + 1}/{count}</strong></p>
     <progress value={count ? (index + 1) / count : 0} />
@@ -28,8 +51,14 @@ let count, index, offset, progress;
 </div>
 
 <div class="foreground" slot="foreground">
-  <section>Section 0: Introduction and CLT Demo (Caleb) </section>
-  <section>Section 1: Law of Large Numbers (Caleb) </section>
+  <section>
+    Section 0: Introduction and CLT Demo (Caleb) 
+  </section>
+  <section bind:this={LLN_sec}>
+    Section 1: Law of Large Numbers (Caleb) 
+    {width_LLN} pixels by {height_LLN} pixels
+    <LLN svg_width={width_LLN} svg_height={height_LLN} />
+  </section>
   <section>Section 2: De Moivre Coin Flip Stuff (Kelo) </section>
   <section>Section 3: Laplace pi in the formula demo (Kelo) </section>
 </div>
@@ -46,7 +75,7 @@ let count, index, offset, progress;
   }
 
   .foreground {
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
     height: auto;
     position: relative;
@@ -55,7 +84,7 @@ let count, index, offset, progress;
 
   .progress-bars {
     position: absolute;
-    background: rgba(170, 51, 120, 0.2) /*  40% opaque */;
+    background: rgba(170, 51, 120, 0.4);
     visibility: visible;
   }
 
