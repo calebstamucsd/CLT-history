@@ -8,6 +8,8 @@ let count, index, offset, progress;
 
 let LLN_sec, height_LLN, width_LLN
 
+// Extra comment so github actions will activate
+
 onMount(() => {
         // Update dimensions when the component is mounted
         width_LLN = LLN_sec.clientWidth;
