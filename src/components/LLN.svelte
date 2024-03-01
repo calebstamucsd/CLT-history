@@ -6,9 +6,16 @@ export let svg_width, svg_height;
 
 let distribution = 'Geometric';
 let parameter = 0.5;
+let min_param = 0;
+let max_param = 1;
+let param_name = "p";
 let mounted = false;
+let mean, niceMean, currentSamp;
+currentSamp = "...";
+let sampleList = [];
+let meanList = [];
 
-let slider_label = "Pick a value for p!";
+let slider_label = `Pick a value for ${param_name}!`;
 
 // Defines the margin that surrounds the svg element
 const center_margin = {top: 50, right: 50, bottom: 50, left: 50},
@@ -45,10 +52,34 @@ function graphFunction(start_idx, end_idx, step, f, param) {
   return data;
 }
 
+function sampleOne() {
+    if (distribution == "Geometric") {
+        currentSamp = d3.randomGeometric(parameter)()
+    }
+    else if (distribution == "Exponential") {
+        currentSamp = d3.randomExponential(parameter)()
+    }
+    else if (distribution == "Gaussian MM") {
+        let which_gaussian = d3.randomBernoulli(0.5)()
+        if(which_gaussian == 0) {
+            currentSamp = d3.randomNormal(2.5, parameter)()
+        }
+        else {
+            currentSamp = d3.randomNormal(7.5, parameter)()
+        }
+    }
+    sampleList.push(currentSamp);
+    sampleList = sampleList;
+    meanList.push((sampleList.reduce((total, current) => total + current, 0) / sampleList.length).toFixed(2));
+    meanList = meanList;
+}
+
 // Define graph limits (in x,y terms)
 const xMax = 10;
 const yMax = 1;
 const geom_yMax = 0.55
+
+let line_xMax, line_yMin, line_yMax, line_xScale, line_yScale, line_xAxis, line_yAxis;
 
 // xScale, yScale convert math units to graphic coordinates making axis elements
 let xScale = d3.scaleLinear([0, xMax], [0, width])
@@ -64,9 +95,34 @@ let geom_xAxis = d3.axisBottom(geom_xScale).tickSize(0).tickFormat("");
 let geom_yAxis = d3.axisLeft(geom_yScale).tickSize(0).tickFormat("");
 let geom_bar_width = geom_xScale(1)
 
-// The width between units for adding bars to a bar chart
+let intervalId = null;
+let isRunning = false;
+let buttonText = "Start Sampling!"
+let inverseSpeed = (1/500);
+let speed = (1/inverseSpeed)
 
-let central_graph, geometric, exponential, mix_model;
+function toggleInterval() {
+    if (isRunning) {
+      clearInterval(intervalId);
+      buttonText = "Start Sampling!"
+    } else {
+      intervalId = setInterval(sampleOne, speed);
+      buttonText = "Pause"
+    }
+    isRunning = !isRunning;
+  }
+
+let central_line = d3.line()
+    .x(d => xScale(d[0]))
+    .y(d => yScale(d[1]))
+
+let line = d3.line()
+  .x(d => geom_xScale(d[0]))
+  .y(d => geom_yScale(d[1]))
+
+let mean_line;
+
+let central_graph, geometric, exponential, mix_model, mean_graph;
 
 // We have to put SVG-related stuff into onMount() because onMount activates AFTER HTML elements are loaded
 onMount(() => {
@@ -153,9 +209,11 @@ geometric.selectAll("rect")
 .attr("stroke-width", 1);
 
 d3.select('div.item-tl').on('click', () => {
-    console.log(distribution)
     distribution = 'Geometric'
-    console.log(distribution)
+    min_param = 0
+    parameter = 0.5
+    max_param = 1
+    param_name = "p"
 })
 
 // select the central graph svg, name it svg
@@ -183,23 +241,20 @@ exponential.append("g")
   .call(geom_yAxis)
   .style("font-size", `8px`);
 
-// Add function graph
-let line = d3.line()
-  .x(d => geom_xScale(d[0]))
-  .y(d => geom_yScale(d[1]))
 exponential.append("path")
   .datum(graphFunction(0.1, xMax - 0.1, 0.5, exp, 0.5))
   .attr("class", "function")
-  .attr("clip-path", "url(#chart-area)")
   .attr("fill", "none")
   .attr("stroke", "blue")
   .attr("stroke-width", 1)
   .attr("d", line);
 
   d3.select('div.item-ml').on('click', () => {
-    console.log(distribution)
     distribution = 'Exponential'
-    console.log(distribution)
+    min_param = 0.01
+    parameter = 0.5
+    max_param = 10
+    param_name = "λ"
 })
 
 // select the central graph svg, name it svg
@@ -230,42 +285,90 @@ mix_model.append("g")
 mix_model.append("path")
   .datum(graphFunction(0.1, xMax, 0.25, mixture, 1))
   .attr("class", "function")
-  .attr("clip-path", "url(#chart-area)")
   .attr("fill", "none")
   .attr("stroke", "magenta")
   .attr("stroke-width", 1)
   .attr("d", line);
 
 d3.select('div.item-bl').on('click', () => {
-    console.log(distribution)
     distribution = 'Gaussian MM'
-    console.log(distribution)
+    min_param = 0.2
+    parameter = 1
+    max_param = 3
+    param_name = "σ"
 })
+
+mean_graph = d3.select("#mean-graph").attr("width", width + center_margin.left + center_margin.right)
+  .attr("height", height + center_margin.top + center_margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + center_margin.left + "," + center_margin.top + ")");
+
+// Define chart area
+mean_graph
+  .append("clipPath")
+  .attr("id", "chart-area")
+  .append("rect")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("width", width)
+  .attr("height", height)
 }) // end of onMount
 
 function wipeCentralGraph() {
     central_graph.selectAll("rect").remove()
     central_graph.selectAll("path.function").remove()
+    wipeMeanGraph()
+}
+
+function wipeMeanGraph() {
+  currentSamp = '...';
+  sampleList = [];
+  meanList = [];
+  mean_graph.selectAll("path.function").remove()
+  mean_graph.selectAll("line.mean").remove()
+  mean_graph.selectAll("circle").remove()
+  clearInterval(intervalId);
+  buttonText = "Start Sampling!"
 }
 
 $: if(mounted) {
-    distribution
     wipeCentralGraph()
-}q
-
-$: if(mounted && (distribution == "Geometric")) {
-    central_graph.selectAll("rect").remove();
-    central_graph.selectAll("rect")
-    .data(graphFunction(1, xMax, 1, geom, parameter))
-    .enter()
-    .append("rect")
-    .attr("x", d => xScale(d[0]) - (bar_width/2))
-    .attr("y", d => yScale(d[1]))
-    .attr("width", bar_width)
-    .attr("height", d => height - yScale(d[1]))
-    .attr("fill", "#DA2A05")
-    .attr("stroke", "black")
-    .attr("stroke-width", 1);
+    if(distribution == 'Geometric') {
+        central_graph.selectAll("rect").remove();
+        central_graph.selectAll("rect")
+        .data(graphFunction(1, xMax, 1, geom, parameter))
+        .enter()
+        .append("rect")
+        .attr("x", d => xScale(d[0]) - (bar_width/2))
+        .attr("y", d => yScale(d[1]))
+        .attr("width", bar_width)
+        .attr("height", d => height - yScale(d[1]))
+        .attr("fill", "#DA2A05")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
+        mean = (1 / parameter);
+    }
+    else if(distribution == 'Exponential') {
+        central_graph.append("path")
+        .datum(graphFunction(0, xMax, 0.25, exp, parameter))
+        .attr("class", "function")
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 1)
+        .attr("d", central_line);
+        mean = (1 / parameter)
+    }
+    else if(distribution == 'Gaussian MM') {
+        central_graph.append("path")
+        .datum(graphFunction(0, xMax, 0.1, mixture, parameter))
+        .attr("class", "function")
+        .attr("fill", "none")
+        .attr("stroke", "magenta")
+        .attr("stroke-width", 1)
+        .attr("d", central_line);
+        mean = 5
+    }
+    niceMean = Number.isNaN(parseFloat(mean)) ? "Invalid number" : parseFloat(mean).toFixed(2);
 }
 
 $: if(mounted) {
@@ -278,40 +381,130 @@ $: if(mounted) {
     .text(distribution + " Distribution")
 }
 
+$: slider_label = `Pick a value for ${param_name}!`;
+
+$: if(mounted) {
+  line_xMax = Math.max(10, meanList.length)
+  line_yMin = Math.min(0, Math.min(...meanList), mean)
+  line_yMax = Math.max(5, Math.max(...meanList), (mean*2))
+
+  line_xScale = d3.scaleLinear([0, line_xMax], [0, width])
+  line_yScale = d3.scaleLinear([line_yMin, line_yMax], [height, 0])
+  line_xAxis = d3.axisBottom(line_xScale)
+  line_yAxis = d3.axisLeft(line_yScale)
+
+  mean_graph.selectAll('g').remove()
+  // adding them to the actual graphic
+  mean_graph.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(line_xAxis)
+  mean_graph.append("g")
+    .attr("transform", `translate(0,0)`)
+    .call(line_yAxis)
+
+  mean_graph.selectAll("path.function").remove()
+  mean_graph.selectAll("line.mean").remove()
+  mean_graph.selectAll("circle").remove()
+
+  mean_line = d3.line()
+    .x(d => line_xScale(d[0]))
+    .y(d => line_yScale(d[1]))
+
+  mean_graph.append("line")
+    .attr("class", "mean")
+    .attr("x1", 0) // Start of the line (x-coordinate)
+    .attr("y1", line_yScale(mean)) // Start of the line (y-coordinate)
+    .attr("x2", width) // End of the line (x-coordinate)
+    .attr("y2", line_yScale(mean)) // End of the line (y-coordinate)
+    .attr("stroke", "red") // Line color
+    .attr("stroke-width", 2); // Line width
+
+  mean_graph.append("path")
+    .datum(meanList.map((value, index) => [index + 1, value]))
+    .attr("class", "function")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .attr("d", mean_line);
+
+  mean_graph.selectAll(".point")
+    .data(meanList.map((value, index) => [index + 1, value]))
+    .enter().append("circle")
+    .attr("class", "point")
+    .attr("cx", d => line_xScale(d[0]))
+    .attr("cy", d => line_yScale(d[1]))
+    .attr("r", 2) // Set the radius of the circles
+    .attr("fill", "black"); // Set the fill color of the circles
+}
+
+$: if(mounted) {
+    speed = (1/inverseSpeed);
+    toggleInterval();
+    toggleInterval();
+  }
+
 </script>
 
 
 <div class="container" style="width: {svg_width - 40}px; height: {svg_height - 60}px;">
     <div class="item-tl">
-        <svg id="geom-dist"></svg>
-        <label>Geometric</label>
+        <svg id="geom-dist" name='geom'></svg>
+        <label for='geom'>Geometric</label>
     </div>
     <div class="item-ml">
-        <svg id="exp-dist"></svg>
-        <label>Exponential</label>
+        <svg id="exp-dist" name='exp'></svg>
+        <label for='exp'>Exponential</label>
     </div>
     <div class="item-bl">
-        <svg id="mixture-dist"></svg>
-        <label>Gaussian Mixture</label>
+        <svg id="mixture-dist" name="GMM"></svg>
+        <label for="GMM">Gaussian Mixture</label>
     </div>
     <div class="item-middle">
         <svg id="central-graph"></svg>
         <br>
-        <label>{slider_label}</label>
+        <label for="parameter">{slider_label}</label>
         <br>
         <input
             id="slider"
             type="range"
+            name="parameter"
             style="width: 50%; margin: 0 auto;"
-            min="0"
-            max="1"
+            min={min_param}
+            max={max_param}
             step="0.01"
             bind:value={parameter}
         />
         <br>
-        p = {parameter}
+        {param_name} = {parameter}
+        <br>
+        The true mean of this distribution is {niceMean}.
+        <br>
     </div>
-    <div class="item-right"></div>
+    <div class="item-right">
+
+      <p> Sample: {Number.isNaN(parseFloat(currentSamp)) ? "..." : parseFloat(currentSamp).toFixed(2)} </p>
+      <p> Number of Samples: {sampleList.length}</p>
+      <p> Running Mean: {(meanList.length < 1) ? "..." : (meanList[meanList.length - 1])} </p>
+      <svg id='mean-graph'></svg>
+      <button on:click={toggleInterval} style="width: fit-content; padding: 3px; margin: 0 auto;">
+        {buttonText}
+      </button>
+      <label for='speed'>Sampling Speed:</label>
+      <input
+        id="slider"
+        type="range"
+        name="speed"
+        style="width: 50%; margin: 0 auto;"
+        min={(1/1000)}
+        max={(1/75)}
+        step="0.0001"
+        bind:value={inverseSpeed}
+      />
+      <label for='sampler'> Or add a single sample here: </label>
+      <button on:click={sampleOne} name='sampler' style="width: fit-content; padding: 3px; margin: 0 auto;">Sample Once</button>
+      <br>
+      <button on:click={wipeMeanGraph} name='reset' style="width: fit-content; padding: 3px; margin: 0 auto;">Reset</button>
+    </div>
 </div>
 
 
