@@ -2,6 +2,7 @@
 import Scroller from "@sveltejs/svelte-scroller";
 import * as d3 from 'd3';
 import LLN from "./LLN.svelte"
+import CLTHook from "./CLT_hook.svelte"
 import { onMount } from 'svelte';
 
 let count, index, offset, progress;
@@ -62,7 +63,7 @@ onMount(() => {
 <div class="foreground" slot="foreground">
   <section>
     Section 0: Introduction and CLT Demo (Caleb) 
-    
+    <CLTHook/>
   </section>
   <section style="height: 55vh">
     Section 1: Law of Large Numbers (Caleb) <br>
