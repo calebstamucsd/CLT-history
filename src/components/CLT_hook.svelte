@@ -101,7 +101,7 @@
         }
         await wait(1000);
         slide_3_text_2 = "What an interesting curve! You could even say it looks bell-shaped..."
-        slide_3_button = true;
+        slide_3_button = false;
     }
     
     function binList(list, step) {
