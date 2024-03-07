@@ -154,14 +154,14 @@ central_graph.append("g")
 
 // Axes labels
 central_graph.append("text")
-  .attr("class", "x label")
-  .attr("text-anchor", "end")
-  .attr("x", width / 2 + 5)
+  .attr("class", "x-label")
+  .attr("text-anchor", "middle")
+  .attr("x", width / 2)
   .attr("y", height + 35)
   .text("x");
 central_graph.append("text")
-  .attr("class", "y label")
-  .attr("text-anchor", "end")
+  .attr("class", "y-label")
+  .attr("text-anchor", "middle")
   .attr("y", -35)
   .attr("x", -height / 2)
   .attr("transform", "rotate(-90)")
@@ -312,6 +312,20 @@ mean_graph
   .attr("y", 0)
   .attr("width", width)
   .attr("height", height)
+
+mean_graph.append("text")
+  .attr("class", "x-label")
+  .attr("text-anchor", "middle")
+  .attr("x", width / 2)
+  .attr("y", height + 35)
+  .text("N");
+mean_graph.append("text")
+  .attr("class", "y-label")
+  .attr("text-anchor", "middle")
+  .attr("y", -35)
+  .attr("x", -height / 2)
+  .attr("transform", "rotate(-90)")
+  .html("Running Mean")
 }) // end of onMount
 
 function wipeCentralGraph() {
@@ -331,6 +345,29 @@ function wipeMeanGraph() {
   buttonText = "Start Sampling!"
 }
 
+function swap_density_label(mass) {
+  if(mass) {
+    central_graph.selectAll('text.y-label').remove()
+    central_graph.append("text")
+    .attr("class", "y-label")
+    .attr("text-anchor", "middle")
+    .attr("y", -35)
+    .attr("x", -height / 2)
+    .attr("transform", "rotate(-90)")
+    .html("P(X=x)")
+  }
+  else {
+    central_graph.selectAll('text.y-label').remove()
+    central_graph.append("text")
+    .attr("class", "y-label")
+    .attr("text-anchor", "middle")
+    .attr("y", -35)
+    .attr("x", -height / 2)
+    .attr("transform", "rotate(-90)")
+    .html("P(X)")
+  }
+}
+
 $: if(mounted) {
     wipeCentralGraph()
     if(distribution == 'Geometric') {
@@ -347,6 +384,7 @@ $: if(mounted) {
         .attr("stroke", "black")
         .attr("stroke-width", 1);
         mean = (1 / parameter);
+        swap_density_label(true);
     }
     else if(distribution == 'Exponential') {
         central_graph.append("path")
@@ -357,6 +395,7 @@ $: if(mounted) {
         .attr("stroke-width", 1)
         .attr("d", central_line);
         mean = (1 / parameter)
+        swap_density_label(false);
     }
     else if(distribution == 'Gaussian MM') {
         central_graph.append("path")
@@ -367,6 +406,7 @@ $: if(mounted) {
         .attr("stroke-width", 1)
         .attr("d", central_line);
         mean = 5
+        swap_density_label(false);
     }
     niceMean = Number.isNaN(parseFloat(mean)) ? "Invalid number" : parseFloat(mean).toFixed(2);
 }
@@ -446,7 +486,7 @@ $: if(mounted) {
 </script>
 
 
-<div class="container" style="width: {svg_width - 40}px; height: {svg_height - 60}px;">
+<div class="container" style="width: {svg_width}px; height: {svg_height - 60}px;">
     <div class="item-tl">
         <svg id="geom-dist" name='geom'></svg>
         <label for='geom'>Geometric</label>
@@ -483,12 +523,13 @@ $: if(mounted) {
     <div class="item-right">
 
       <p> Sample: {Number.isNaN(parseFloat(currentSamp)) ? "..." : parseFloat(currentSamp).toFixed(2)} </p>
-      <p> Number of Samples: {sampleList.length}</p>
+      <p> Number of Samples: {sampleList.length} </p>
       <p> Running Mean: {(meanList.length < 1) ? "..." : (meanList[meanList.length - 1])} </p>
       <svg id='mean-graph'></svg>
-      <button on:click={toggleInterval} style="width: fit-content; padding: 3px; margin: 0 auto;">
+      <button class='button-30' on:click={toggleInterval} style="width: fit-content; padding: 3px; margin: 0 auto;">
         {buttonText}
       </button>
+      <br>
       <label for='speed'>Sampling Speed:</label>
       <input
         id="slider"
@@ -500,15 +541,20 @@ $: if(mounted) {
         step="0.0001"
         bind:value={inverseSpeed}
       />
-      <label for='sampler'> Or add a single sample here: </label>
-      <button on:click={sampleOne} name='sampler' style="width: fit-content; padding: 3px; margin: 0 auto;">Sample Once</button>
       <br>
-      <button on:click={wipeMeanGraph} name='reset' style="width: fit-content; padding: 3px; margin: 0 auto;">Reset</button>
+      <label for='sampler'> Or add a single sample here: </label>
+      <button class='button-30' on:click={sampleOne} name='sampler' style="width: fit-content; padding: 3px; margin: 0 auto;">Sample Once</button>
+      <br>
+      <button class='button-30' on:click={wipeMeanGraph} name='reset' style="width: fit-content; padding: 3px; margin: 0 auto;">Reset</button>
     </div>
 </div>
 
 
 <style>
+    p {
+      margin: 0; /* Set margin to 0 */
+      padding: 5px; /* Add some padding for spacing */
+    }
     .container {
         display: grid;
         grid-template-columns: 1fr 2fr 2fr;
@@ -560,4 +606,49 @@ $: if(mounted) {
         justify-content: center;
         align-items: center;
     }
+
+    .button-30 {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #000000;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'Garamond', 'serif';
+    font-weight:500;
+    height: 48px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding: 20px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform;
+    font-size: 18px;
+  }
+
+  .button-30:focus {
+    box-shadow: #e7e3d6 0 0 0 1.5px inset, rgba(54, 52, 2, 0.4) 0 2px 4px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
+  }
+
+  .button-30:hover {
+    box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
+    transform: translateY(-2px);
+  }
+
+  .button-30:active {
+    box-shadow: #e7e3d6 0 3px 7px inset;
+    transform: translateY(2px);
+  }
 </style>

@@ -35,7 +35,7 @@
     let dialog_list = [dialog_0, dialog_1, dialog_2, dialog_3, dialog_4];
     let movie_choice, movie_data;
     let user_score = 0.5;
-    let user_mean;
+    let user_mean, movie_mean;
 
     const center_margin = {top: 50, right: 50, bottom: 50, left: 50},
     width = 250 - center_margin.left - center_margin.right,
@@ -51,7 +51,8 @@
     let slide_2_text_2 = '';
     let slide_2_text_3 = '';
     let slide_2_text_4 = '';
-    let slide_2_button = false;
+    let slide_2_button = true;
+    let slide_3_button = true;
 
     let slide_3_text_1 = '';
     let slide_3_text_2 = '';
@@ -64,7 +65,6 @@
     let show = false;
 
     function swapModal(idx_1, idx_2) {
-        console.log(base)
         dialog_list[idx_1].close();
         dialog_list[idx_2].show();
         if(idx_2 == 2) {
@@ -84,21 +84,24 @@
     async function slide_3() {
         let mean_list = [user_mean];
         inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
-        await wait(1000);
+        await wait(2000);
         slide_3_text_1 = 'Now, we\'ll add more observations. Remember - each addition to this plot represents the AVERAGE of 50 ratings, not just one person\'s review.'
+        await wait(2000);
         for(let i = 5; i < 501; i += 5) {
-            mean_hist.selectAll("g").remove()
+            mean_hist.selectAll("g.axis").remove()
             meanyMax = i;
-            inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
             await wait(50);
+            inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
         }
-        await wait(3000);
-        for(let i = 0; i < 1000; i++) {
+        await wait(1000);
+        for(let i = 0; i < 1500; i++) {
             mean_list.push(sample_mean(50))
             inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
-            await(wait(10));
+            await(wait(5));
         }
-        slide_3_text_2 = "What an interesting curve! One might even say it looks bell-shaped..."
+        await wait(1000);
+        slide_3_text_2 = "What an interesting curve! You could even say it looks bell-shaped..."
+        slide_3_button = true;
     }
     
     function binList(list, step) {
@@ -129,7 +132,8 @@
     }
 
     function clear_histogram(hist) {
-        hist.selectAll("rect").remove()
+        hist.selectAll('.rectClass').remove()
+        hist.selectAll('rect').remove()
     }
 
     function wait(ms) {
@@ -138,10 +142,11 @@
 
     function inner_plot(hist, data_list, my_bar_width, myXScale, myYScale) {
         clear_histogram(hist)
-        hist.selectAll("rect")
+        hist.selectAll('.rectClass')
                 .data(data_list)
                 .enter()
                 .append("rect")
+                .classed("rectClass",true)
                 .attr("x", d => myXScale(d[0]) - (my_bar_width/2))
                 .attr("y", d => myYScale(d[1]))
                 .attr("width", my_bar_width)
@@ -207,7 +212,7 @@
         }
         user_mean = (sum / samps)
         await wait(1500);
-        slide_2_text_3 = `The average rating for the movie is ${user_mean.toFixed(2)} stars.`
+        slide_2_text_3 = `The average rating from this sample is ${user_mean.toFixed(2)} stars.`
         await wait(2500);
         slide_2_text_4 = "But wait. Doesn't our sample seem a little small? Let's take some more to get a better picture."
         await wait(2500);
@@ -222,6 +227,14 @@
                 .then(response => response.json())
                 .then(data => {
                     movie_data = data[movie_choice];
+                    let sum = 0;
+                    let samps = 0;
+                    for (const key of Object.keys(movie_data).sort()) {
+                        const value = movie_data[key];
+                        sum += (key * value);
+                        samps += (value);
+                    }
+                    movie_mean = (sum / samps)
                 })
                 .then(() => {
                     xMax = 5;
@@ -248,7 +261,61 @@
                     histogram.append("g")
                         .attr("transform", `translate(0,0)`)
                         .call(yAxis)
+                    histogram.append("text")
+                        .attr("class", "x-label")
+                        .attr("text-anchor", "middle")
+                        .attr("x", width / 2)
+                        .attr("y", height + 35)
+                        .text("Rating");
+                    histogram.append("text")
+                        .attr("class", "y-label")
+                        .attr("text-anchor", "middle")
+                        .attr("y", -35)
+                        .attr("x", -height / 2)
+                        .attr("transform", "rotate(-90)")
+                        .html("Num. Reviews")
                     isMounted = true;
+
+                    meanxMin = (movie_mean - 1);
+                    meanxMax = (movie_mean + 1);
+                    meanxScale = d3.scaleLinear([meanxMin, meanxMax], [0, width])
+                    meanyScale = d3.scaleLinear([0, meanyMax], [height, 0])
+                    meanxAxis = d3.axisBottom(meanxScale)
+                    meanyAxis = d3.axisLeft(meanyScale)
+                    mean_bar_width = meanxScale((meanxMin + 0.1))
+
+                    mean_hist = d3.select('#mean-hist').attr("width", width + center_margin.left + center_margin.right)
+                        .attr("height", height + center_margin.top + center_margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + center_margin.left + "," + center_margin.top + ")");
+                    mean_hist.append("clipPath")
+                        .attr("id", "chart-area")
+                        .append("rect")
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", width)
+                        .attr("height", height)
+                    mean_hist.append("g")
+                        .attr("transform", `translate(0,${height})`)
+                        .attr("class", "axis")
+                        .call(meanxAxis)
+                    mean_hist.append("g")
+                        .attr("transform", `translate(0,0)`)
+                        .attr("class", "axis")
+                        .call(meanyAxis)
+                    mean_hist.append("text")
+                        .attr("class", "x-label")
+                        .attr("text-anchor", "middle")
+                        .attr("x", width / 2)
+                        .attr("y", height + 35)
+                        .text("Mean Rating");
+                    mean_hist.append("text")
+                        .attr("class", "y-label")
+                        .attr("text-anchor", "middle")
+                        .attr("y", -35)
+                        .attr("x", -height / 2)
+                        .attr("transform", "rotate(-90)")
+                        .html("Num. Samples")
                 }
             )
         })
@@ -256,32 +323,16 @@
 
     $: show = show;
     $: if(isMounted) {
-        meanxMin = 3;
-        meanxMax = 5;
-        meanxScale = d3.scaleLinear([meanxMin, meanxMax], [0, width])
         meanyScale = d3.scaleLinear([0, meanyMax], [height, 0])
-        meanxAxis = d3.axisBottom(meanxScale)
         meanyAxis = d3.axisLeft(meanyScale)
-        mean_bar_width = meanxScale(3.1)
-
-        mean_hist = d3.select('#mean-hist').attr("width", width + center_margin.left + center_margin.right)
-            .attr("height", height + center_margin.top + center_margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + center_margin.left + "," + center_margin.top + ")");
-        mean_hist.append("clipPath")
-            .attr("id", "chart-area")
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", width)
-            .attr("height", height)
         mean_hist.append("g")
             .attr("transform", `translate(0,${height})`)
+            .attr("class", "axis")
             .call(meanxAxis)
         mean_hist.append("g")
             .attr("transform", `translate(0,0)`)
+            .attr("class", "axis")
             .call(meanyAxis)
-                    
     }
 </script>
 
@@ -330,8 +381,6 @@
         <img name="Parasite (2019)" src="images/parasite.jpg" alt="Parasite Movie Poster" width=140 height=210>
     </div>
 </div>
-<br>
-<button class="button-30" on:click={() => swapModal(0,1)}>Next</button>
 </dialog>
 
 <dialog
@@ -362,16 +411,18 @@
 	bind:this={dialog_list[3]}
 >
 <p>Here's the mean we just got.</p>
-<svg id="mean-hist" />
 <p>{slide_3_text_1}</p>
+<svg id="mean-hist" />
 <p>{slide_3_text_2}</p>
-<button class="button-30" on:click={() => swapModal(3,4)}>Next</button>
+<button class="button-30" disabled={slide_3_button} on:click={() => swapModal(3,4)}>Next</button>
 </dialog>
 
 <dialog
 	bind:this={dialog_list[4]}
 >
-<p>We're going to walk through the discovery, analysis, and proof of this mysterious bell shaped curve.</p>
+<p>This bell-shaped curve appears no matter what if you follow this process - you could pick any movie, with any set of ratings, or even another dataset entirely, and it would still appear!</p>
+<br>
+<p>We're going to walk through the discovery, analysis, and proof of this mysterious curve.</p>
 <br>
 <p>When you're ready, click the button below.</p>
 <button class="button-30" on:click={() => closeOut()}>continue</button>
@@ -431,14 +482,19 @@ dialog {
   box-shadow: #e7e3d6 0 0 0 1.5px inset, rgba(54, 52, 2, 0.4) 0 2px 4px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
 }
 
-.button-30:hover {
+.button-30:hover:enabled {
   box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
-.button-30:active {
+.button-30:active:enabled {
   box-shadow: #e7e3d6 0 3px 7px inset;
   transform: translateY(2px);
+}
+
+.button-30:disabled {
+    background-color: rgba(181, 181, 181, 0.2);
+    box-shadow: none;
 }
 
 </style>
