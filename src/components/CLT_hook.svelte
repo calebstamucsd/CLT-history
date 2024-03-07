@@ -4,6 +4,8 @@
     import { createEventDispatcher } from 'svelte';
     import StarRating from "@ernane/svelte-star-rating";
 
+    // comment for github pages update
+
     const config = {
         readOnly: false,
         countStars: 5,
