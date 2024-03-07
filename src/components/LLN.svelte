@@ -522,6 +522,7 @@ $: if(mounted) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
     .item-ml{
         grid-column: 1 / span 1;
@@ -530,6 +531,7 @@ $: if(mounted) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
     .item-bl{
         grid-column: 1 / span 1;
@@ -538,6 +540,7 @@ $: if(mounted) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
     .item-middle{
         grid-column: 2 / span 1;
@@ -546,6 +549,7 @@ $: if(mounted) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
     .item-right{
         grid-column: 3 / span 1;
@@ -554,5 +558,6 @@ $: if(mounted) {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
 </style>
