@@ -296,36 +296,36 @@
         The Lion King (1994)
         <br>
         <br>
-        <img name="Lion King, The (1994)" src="./src/components/assets/images/the_lion_king.jpg" alt="The Lion King Movie Poster" width=140 height=210>
+        <img name="Lion King, The (1994)" src="/src/components/assets/images/the_lion_king.jpg" alt="The Lion King Movie Poster" width=140 height=210>
     </div>
     <div>
         Titanic (1997)
         <br>
         <br>
-        <img name="Titanic (1997)" src="./src/components/assets/images/titanic.jpg" alt="Titanic Movie Poster" width=140 height=210>
+        <img name="Titanic (1997)" src="/src/components/assets/images/titanic.jpg" alt="Titanic Movie Poster" width=140 height=210>
     </div>
     <div>
         Spirited Away (2001)
         <br>
         <br>
-        <img name="Spirited Away (Sen to Chihiro no kamikakushi) (2001)" src="./src/components/assets/images/spirited_away.jpg" alt="Spirited Away Movie Poster" width=140 height=210>
+        <img name="Spirited Away (Sen to Chihiro no kamikakushi) (2001)" src="/src/components/assets/images/spirited_away.jpg" alt="Spirited Away Movie Poster" width=140 height=210>
     </div>
     <div>
         Harry Potter and the Sorcerer's Stone (2001)
         <br>
-        <img name="Harry Potter and the Sorcerer's Stone (a.k.a. Harry Potter and the Philosopher's Stone) (2001)" src="./src/components/assets/images/harry_potter.jpg" alt="Harry Potter and the Philosopher's Stone Movie Poster" width=140 height=210>
+        <img name="Harry Potter and the Sorcerer's Stone (a.k.a. Harry Potter and the Philosopher's Stone) (2001)" src="/src/components/assets/images/harry_potter.jpg" alt="Harry Potter and the Philosopher's Stone Movie Poster" width=140 height=210>
     </div>
     <div>
         The Avengers (2012)
         <br>
         <br>
-        <img name="Avengers, The (2012)" src="./src/components/assets/images/the_avengers.jpg" alt="The Avengers Movie Poster" width=140 height=210>
+        <img name="Avengers, The (2012)" src="/src/components/assets/images/the_avengers.jpg" alt="The Avengers Movie Poster" width=140 height=210>
     </div>
     <div>
         Parasite (2019)
         <br>
         <br>
-        <img name="Parasite (2019)" src="./src/components/assets/images/parasite.jpg" alt="Parasite Movie Poster" width=140 height=210>
+        <img name="Parasite (2019)" src="/src/components/assets/images/parasite.jpg" alt="Parasite Movie Poster" width=140 height=210>
     </div>
 </div>
 <br>
