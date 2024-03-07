@@ -218,7 +218,7 @@
         d3.selectAll('img').on('click', function(event) {
             swapModal(0, 1)
             movie_choice = event.target.name;
-            fetch(`${base}/src/components/assets/movie_ratings.json`)
+            fetch('assets/movie_ratings.json')
                 .then(response => response.json())
                 .then(data => {
                     movie_data = data[movie_choice];
