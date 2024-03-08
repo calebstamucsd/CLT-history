@@ -3,6 +3,7 @@ import Scroller from "@sveltejs/svelte-scroller";
 import * as d3 from 'd3';
 import LLN from "./LLN.svelte"
 import CLTHook from "./CLT_hook.svelte"
+import Formula from "./Formula.svelte"
 import { onMount } from 'svelte';
 
 let count, index, offset, progress;
@@ -55,7 +56,7 @@ function unlockWebpage(event) {
   bind:progress
 >
 
-<div class="background" slot="background">
+<div class="background" slot="background" style="height: 100vh;">
   <!-- <div class="progress-bars">
     <p>current section: <strong>{index + 1}/{count}</strong></p>
     <progress value={count ? (index + 1) / count : 0} />
@@ -83,7 +84,7 @@ function unlockWebpage(event) {
   {#if unlocked}
   <section style="height: auto">
     <h2> 1713: Bernoulli's Law of Large Numbers </h2> <br>
-    <p> (Wikipedia Text as Placeholder) In probability theory, the law of large numbers (LLN) is a mathematical theorem that states that the average of the results obtained from a large number of independent and identical random samples converges to the true value, if it exists. More formally, the LLN states that given a sample of independent and identically distributed values, the sample mean converges to the true mean. </p>
+    <p> (Wikipedia Text as Placeholder) In probability theory, the law of large numbers (LLN) is a mathematical theorem that states that the average of the results obtained from a large number of independent and identical random samples converges to the true value, if it exists. More formally, the LLN states that given a sample of independent and identically distributed values, the sample mean converges to. </p>
     <p> The Italian mathematician Gerolamo Cardano (1501–1576) stated without proof that the accuracies of empirical statistics tend to improve with the number of trials. This was then formalized as a law of large numbers. A special form of the LLN (for a binary random variable) was first proved by Jacob Bernoulli. It took him over 20 years to develop a sufficiently rigorous mathematical proof which was published in his Ars Conjectandi (The Art of Conjecturing) in 1713. He named this his "Golden Theorem" but it became generally known as "Bernoulli's theorem". This should not be confused with Bernoulli's principle, named after Jacob Bernoulli's nephew Daniel Bernoulli. In 1837, S. D. Poisson further described it under the name "la loi des grands nombres" ("the law of large numbers"). Thereafter, it was known under both names, but the "law of large numbers" is most frequently used. </p>
     <p> After Bernoulli and Poisson published their efforts, other mathematicians also contributed to refinement of the law, including Chebyshev, Markov, Borel, Cantelli, Kolmogorov and Khinchin. Markov showed that the law can apply to a random variable that does not have a finite variance under some other weaker assumption, and Khinchin showed in 1929 that if the series consists of independent identically distributed random variables, it suffices that the expected value exists for the weak law of large numbers to be true. These further studies have given rise to two prominent forms of the LLN. One is called the "weak" law and the other the "strong" law, in reference to two different modes of convergence of the cumulative sample means to the expected value; in particular, as explained below, the strong form implies the weak. </p>
   </section>
@@ -95,6 +96,7 @@ function unlockWebpage(event) {
   </section>
   <section>
     <h2> 1812: Laplace's Approximation </h2>
+    <Formula />
   </section>
   <section>
     <h2> 1850s-1900s: Cauchy and the Russians </h2>
@@ -106,8 +108,7 @@ function unlockWebpage(event) {
 
 <style>
   .background {
-    width: 100%;
-    height: 100vh;
+    width: 100vw;
     position: relative;
     /* outline: green solid 3px; */
     background: rgba(245, 245, 220, 1);

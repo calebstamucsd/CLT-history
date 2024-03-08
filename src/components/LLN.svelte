@@ -248,7 +248,7 @@ exponential.append("path")
   .datum(graphFunction(0.1, xMax - 0.1, 0.2, exp, 0.5))
   .attr("class", "function")
   .attr("fill", "none")
-  .attr("stroke", "blue")
+  .attr("stroke", "#375DEF")
   .attr("stroke-width", 1)
   .attr("d", line);
 
@@ -289,7 +289,7 @@ mix_model.append("path")
   .datum(graphFunction(0.1, xMax, 0.05, mixture, 1))
   .attr("class", "function")
   .attr("fill", "none")
-  .attr("stroke", "magenta")
+  .attr("stroke", "#CC00B3")
   .attr("stroke-width", 1)
   .attr("d", line);
 

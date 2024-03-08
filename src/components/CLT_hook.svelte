@@ -53,6 +53,7 @@
     let slide_2_text_4 = '';
     let slide_2_button = true;
     let slide_3_button = true;
+    let start_button = false;
 
     let slide_3_text_1 = '';
     let slide_3_text_2 = '';
@@ -67,12 +68,18 @@
     function swapModal(idx_1, idx_2) {
         dialog_list[idx_1].close();
         dialog_list[idx_2].show();
+        
         if(idx_2 == 2) {
             plot_histogram(49)
         }
         if(idx_2 == 3) {
             slide_3()
         }
+    }
+
+    function startUp() {
+        dialog_list[0].show()
+        start_button = true;
     }
 
     function closeOut() {
@@ -336,7 +343,7 @@
 </script>
 
 {#if !show}
-<button class="button-30" on:click={() => (dialog_list[0].show())}> Start! </button>
+<button class="button-30" disabled={start_button} on:click={startUp}> Start! </button>
 {/if}
 
 <dialog
@@ -443,6 +450,7 @@ img {
     box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px;
     transition: box-shadow .15s,transform .15s;
     will-change: box-shadow,transform;
+    cursor: pointer;
 }
 img:hover {
     transform: translateY(-2px);
