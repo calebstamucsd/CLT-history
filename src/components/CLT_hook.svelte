@@ -38,8 +38,8 @@
     let user_mean, movie_mean;
 
     const center_margin = {top: 50, right: 50, bottom: 50, left: 50},
-    width = 250 - center_margin.left - center_margin.right,
-    height = 200 - center_margin.top - center_margin.bottom;
+    width = 300 - center_margin.left - center_margin.right,
+    height = 250 - center_margin.top - center_margin.bottom;
     let xMax, yMax, xScale, yScale, xAxis, yAxis, bar_width, mean_bar_width;
     let meanxMin, meanxMax, meanxScale, meanyScale, meanxAxis, meanyAxis;
     let meanyMax = 5;
@@ -90,8 +90,8 @@
         for(let i = 5; i < 501; i += 5) {
             mean_hist.selectAll("g.axis").remove()
             meanyMax = i;
-            await wait(50);
             inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
+            await wait((250/Math.sqrt(i)) + 15);
         }
         await wait(1000);
         for(let i = 0; i < 1500; i++) {
@@ -215,7 +215,6 @@
         slide_2_text_3 = `The average rating from this sample is ${user_mean.toFixed(2)} stars.`
         await wait(2500);
         slide_2_text_4 = "But wait. Doesn't our sample seem a little small? Let's take some more to get a better picture."
-        await wait(2500);
         slide_2_button = false;
     }
 
@@ -425,7 +424,7 @@
 <p>We're going to walk through the discovery, analysis, and proof of this mysterious curve.</p>
 <br>
 <p>When you're ready, click the button below.</p>
-<button class="button-30" on:click={() => closeOut()}>continue</button>
+<button class="button-30" on:click={() => closeOut()}>Continue</button>
 </dialog>
 
 <style>
@@ -435,8 +434,21 @@ dialog {
     left: 50%;
     background: rgba(255, 255, 230, 1);
     transform: translate(-50%, -50%);
-    width: 40vw;
+    width: 50vw;
     height: auto;
+    border-radius: 10px;
+}
+
+img {
+    box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px;
+    transition: box-shadow .15s,transform .15s;
+    will-change: box-shadow,transform;
+}
+img:hover {
+    transform: translateY(-2px);
+}
+img:active {
+    transform: translateY(2px);
 }
 
 .movie-container {
@@ -447,35 +459,21 @@ dialog {
 }
 
 .button-30 {
-  align-items: center;
-  appearance: none;
-  background-color: #FCFCFD;
-  border-radius: 4px;
-  border-width: 0;
-  box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -3px 0 inset;
-  box-sizing: border-box;
-  color: #000000;
-  cursor: pointer;
-  display: inline-flex;
-  font-family: 'Garamond', 'serif';
-  font-weight:500;
-  height: 48px;
-  justify-content: center;
-  line-height: 1;
-  list-style: none;
-  overflow: hidden;
-  padding-left: 16px;
-  padding-right: 16px;
-  position: relative;
-  text-align: left;
-  text-decoration: none;
-  transition: box-shadow .15s,transform .15s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: nowrap;
-  will-change: box-shadow,transform;
-  font-size: 18px;
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -3px 0 inset;
+    color: #000000;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'Garamond', 'serif';
+    font-size: 18px;
+    height: 40px;
+    justify-content: center;
+    transition: box-shadow .15s,transform .15s;
+    will-change: box-shadow,transform;
 }
 
 .button-30:focus {
@@ -494,6 +492,7 @@ dialog {
 
 .button-30:disabled {
     background-color: rgba(181, 181, 181, 0.2);
+    cursor: default;
     box-shadow: none;
 }
 

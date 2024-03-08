@@ -15,11 +15,14 @@ currentSamp = "...";
 let sampleList = [];
 let meanList = [];
 
+let theme_light = '#DA2A05'; 
+let theme_dark = '#831e0a';
+
 let slider_label = `Pick a value for ${param_name}!`;
 
 // Defines the margin that surrounds the svg element
 const center_margin = {top: 50, right: 50, bottom: 50, left: 50},
-  width = 250 - center_margin.left - center_margin.right,
+  width = 260 - center_margin.left - center_margin.right,
   height = 200 - center_margin.top - center_margin.bottom;
 
 // Defines the margin that surrounds the svg element
@@ -168,8 +171,8 @@ central_graph.append("text")
   .html("P(X=x)")
 central_graph.append("text")
 .attr("class", "title")
-.attr("text-anchor", "title")
-.attr("x", width/2 - 75)
+.attr("text-anchor", "center")
+.attr("x", width/2)
 .attr("y", -10)
 .text(distribution + " Distribution")
 
@@ -210,7 +213,7 @@ geometric.selectAll("rect")
 
 d3.select('div.item-tl').on('click', () => {
     distribution = 'Geometric'
-    min_param = 0
+    min_param = 0.01
     parameter = 0.5
     max_param = 1
     param_name = "p"
@@ -242,7 +245,7 @@ exponential.append("g")
   .style("font-size", `8px`);
 
 exponential.append("path")
-  .datum(graphFunction(0.1, xMax - 0.1, 0.5, exp, 0.5))
+  .datum(graphFunction(0.1, xMax - 0.1, 0.2, exp, 0.5))
   .attr("class", "function")
   .attr("fill", "none")
   .attr("stroke", "blue")
@@ -283,7 +286,7 @@ mix_model.append("g")
   .style("font-size", `8px`);
 
 mix_model.append("path")
-  .datum(graphFunction(0.1, xMax, 0.25, mixture, 1))
+  .datum(graphFunction(0.1, xMax, 0.05, mixture, 1))
   .attr("class", "function")
   .attr("fill", "none")
   .attr("stroke", "magenta")
@@ -371,6 +374,8 @@ function swap_density_label(mass) {
 $: if(mounted) {
     wipeCentralGraph()
     if(distribution == 'Geometric') {
+        theme_light = '#DA2A05'
+        theme_dark = '#831e0a'
         central_graph.selectAll("rect").remove();
         central_graph.selectAll("rect")
         .data(graphFunction(1, xMax, 1, geom, parameter))
@@ -380,29 +385,33 @@ $: if(mounted) {
         .attr("y", d => yScale(d[1]))
         .attr("width", bar_width)
         .attr("height", d => height - yScale(d[1]))
-        .attr("fill", "#DA2A05")
+        .attr("fill", theme_light)
         .attr("stroke", "black")
         .attr("stroke-width", 1);
         mean = (1 / parameter);
         swap_density_label(true);
     }
     else if(distribution == 'Exponential') {
+        theme_light = '#375DEF'
+        theme_dark = '#071D70'
         central_graph.append("path")
         .datum(graphFunction(0, xMax, 0.25, exp, parameter))
         .attr("class", "function")
         .attr("fill", "none")
-        .attr("stroke", "blue")
+        .attr("stroke", theme_light)
         .attr("stroke-width", 1)
         .attr("d", central_line);
         mean = (1 / parameter)
         swap_density_label(false);
     }
     else if(distribution == 'Gaussian MM') {
+        theme_light = '#CC00B3'
+        theme_dark = '#6D0D61'
         central_graph.append("path")
         .datum(graphFunction(0, xMax, 0.1, mixture, parameter))
         .attr("class", "function")
         .attr("fill", "none")
-        .attr("stroke", "magenta")
+        .attr("stroke", theme_light)
         .attr("stroke-width", 1)
         .attr("d", central_line);
         mean = 5
@@ -456,7 +465,7 @@ $: if(mounted) {
     .attr("y1", line_yScale(mean)) // Start of the line (y-coordinate)
     .attr("x2", width) // End of the line (x-coordinate)
     .attr("y2", line_yScale(mean)) // End of the line (y-coordinate)
-    .attr("stroke", "red") // Line color
+    .attr("stroke", theme_light) // Line color
     .attr("stroke-width", 2); // Line width
 
   mean_graph.append("path")
@@ -487,17 +496,17 @@ $: if(mounted) {
 
 
 <div class="container" style="width: {svg_width}px; height: {svg_height - 60}px;">
-    <div class="item-tl">
+    <div class="left-row item-tl">
         <svg id="geom-dist" name='geom'></svg>
-        <label for='geom'>Geometric</label>
+        <label class="dist-pick" for='geom'>Geometric</label>
     </div>
-    <div class="item-ml">
+    <div class="left-row item-ml">
         <svg id="exp-dist" name='exp'></svg>
-        <label for='exp'>Exponential</label>
+        <label class="dist-pick" for='exp'>Exponential</label>
     </div>
-    <div class="item-bl">
+    <div class="left-row item-bl">
         <svg id="mixture-dist" name="GMM"></svg>
-        <label for="GMM">Gaussian Mixture</label>
+        <label class="dist-pick" for="GMM">Gaussian Mixture</label>
     </div>
     <div class="item-middle">
         <svg id="central-graph"></svg>
@@ -517,7 +526,8 @@ $: if(mounted) {
         <br>
         {param_name} = {parameter}
         <br>
-        The true mean of this distribution is {niceMean}.
+        <br>
+        The true mean of this <br> distribution is {niceMean}.
         <br>
     </div>
     <div class="item-right">
@@ -531,19 +541,17 @@ $: if(mounted) {
       </button>
       <br>
       <label for='speed'>Sampling Speed:</label>
+      <br>
       <input
         id="slider"
         type="range"
         name="speed"
-        style="width: 50%; margin: 0 auto;"
         min={(1/1000)}
         max={(1/75)}
         step="0.0001"
+        
         bind:value={inverseSpeed}
       />
-      <br>
-      <label for='sampler'> Or add a single sample here: </label>
-      <button class='button-30' on:click={sampleOne} name='sampler' style="width: fit-content; padding: 3px; margin: 0 auto;">Sample Once</button>
       <br>
       <button class='button-30' on:click={wipeMeanGraph} name='reset' style="width: fit-content; padding: 3px; margin: 0 auto;">Reset</button>
     </div>
@@ -551,104 +559,135 @@ $: if(mounted) {
 
 
 <style>
-    p {
-      margin: 0; /* Set margin to 0 */
-      padding: 5px; /* Add some padding for spacing */
-    }
-    .container {
-        display: grid;
-        grid-template-columns: 1fr 2fr 2fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        grid-gap:10px;
-    }
-    .item-tl{
-        grid-column: 1 / span 1;
-        grid-row: 1 / span 1;
-        background-color: lightcoral;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .item-ml{
-        grid-column: 1 / span 1;
-        grid-row: 2 / span 1;
-        background-color: lightblue;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .item-bl{
-        grid-column: 1 / span 1;
-        grid-row: 3 / span 1;
-        background-color: lightpink;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .item-middle{
-        grid-column: 2 / span 1;
-        grid-row: 1 / span 3;
-        background-color: bisque;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .item-right{
-        grid-column: 3 / span 1;
-        grid-row: 1 / span 3;
-        background-color: beige;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
+p {
+  margin: 0; /* Set margin to 0 */
+  padding: 5px; /* Add some padding for spacing */
+}
+.dist-pick {
+  transform: translateY(-15px);
+}
 
-    .button-30 {
-    align-items: center;
-    appearance: none;
-    background-color: #FCFCFD;
-    border-radius: 4px;
-    border-width: 0;
-    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -3px 0 inset;
-    box-sizing: border-box;
-    color: #000000;
-    cursor: pointer;
-    display: inline-flex;
-    font-family: 'Garamond', 'serif';
-    font-weight:500;
-    height: 48px;
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap:20px;
+}
+
+.left-row{
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: box-shadow .30s,transform .30s;
+  will-change: box-shadow,transform;
+}
+.left-row:hover{
+  transform:translateY(-2px)
+}
+.left-row:active{
+  transform:translateY(2px)
+}
+
+.item-tl{
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,rgba(240, 128, 128, 0.8) 0 -3px 0 inset;
+    background-color: rgba(240, 128, 128, 0.5);
+}
+.item-tl:hover{box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,rgba(240, 128, 128, 0.8) 0 -3px 0 inset;}
+.item-tl:focus {box-shadow: rgba(240, 128, 128, 0.8) 0 0 0 1.5px inset, rgba(54, 52, 2, 0.4) 0 2px 4px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, rgba(240, 128, 128, 0.8) 0 -3px 0 inset;}
+.item-ml{
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,rgba(172, 216, 230, 0.8) 0 -3px 0 inset;
+    background-color: rgba(172, 216, 230, 0.5);
+}
+.item-bl{
+    grid-column: 1 / span 1;
+    grid-row: 3 / span 1;
+    box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,rgba(255, 182, 193, 0.8) 0 -3px 0 inset;
+    background-color: rgba(255, 182, 193, 0.5);
+}
+
+.item-middle{
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    line-height: 1;
-    list-style: none;
-    overflow: hidden;
-    padding: 20px;
-    position: relative;
-    text-align: left;
-    text-decoration: none;
-    transition: box-shadow .15s,transform .15s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
-    will-change: box-shadow,transform;
-    font-size: 18px;
-  }
+    align-items: center;
+}
+.item-right{
+    grid-column: 3 / span 1;
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-  .button-30:focus {
-    box-shadow: #e7e3d6 0 0 0 1.5px inset, rgba(54, 52, 2, 0.4) 0 2px 4px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
-  }
+.button-30 {
+  align-items: center;
+  appearance: none;
+  background-color: #FCFCFD;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -3px 0 inset;
+  color: #000000;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: 'Garamond', 'serif';
+  font-size: 18px;
+  height: 40px;
+  justify-content: center;
+  transition: box-shadow .15s,transform .15s;
+  will-change: box-shadow,transform;
+}
 
-  .button-30:hover {
-    box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
-    transform: translateY(-2px);
-  }
+.button-30:focus {
+  box-shadow: #e7e3d6 0 0 0 1.5px inset, rgba(54, 52, 2, 0.4) 0 2px 4px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
+}
 
-  .button-30:active {
-    box-shadow: #e7e3d6 0 3px 7px inset;
-    transform: translateY(2px);
-  }
+.button-30:hover {
+  box-shadow: rgba(54, 52, 2, 0.4) 0 4px 8px, rgba(54, 52, 2, 0.3) 0 7px 13px -3px, #e7e3d6 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-30:active {
+  box-shadow: #e7e3d6 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 15rem;
+  height: 0.5rem;
+  background: #FCFCFD;
+  box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -2px 0 inset;
+  width: 50%; 
+  margin: 0 auto;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  border-radius: 10px;
+  height: 1rem;
+  width: 1rem;    
+  background: #FCFCFD;
+  box-shadow: rgba(54, 52, 2, 0.4) 0 2px 4px,rgba(54, 52, 2, 0.3) 0 7px 13px -3px,#e7e3d6 0 -2px 0 inset;
+  transition: box-shadow .15s,transform .15s;
+  will-change: box-shadow,transform;
+}
+/* input[type="range"]::-webkit-slider-thumb:hover {
+  transform: translateY(-2px)
+} */
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: translateY(1px)
+}
 </style>

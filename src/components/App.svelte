@@ -90,8 +90,15 @@ function unlockWebpage(event) {
   <section bind:this={LLN_sec} style="height: 80vh">
     <LLN svg_width={width_LLN} svg_height={height_LLN} />
   </section>
-  <section>Section 2: De Moivre Coin Flip Stuff (Kelo) </section>
-  <section>Section 3: Laplace pi in the formula demo (Kelo) </section>
+  <section>
+    <h2> 1733: De Moivre's Coin Flips </h2>
+  </section>
+  <section>
+    <h2> 1812: Laplace's Approximation </h2>
+  </section>
+  <section>
+    <h2> 1850s-1900s: Cauchy and the Russians </h2>
+  </section>
   {/if}
 </div>
 
