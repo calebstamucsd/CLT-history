@@ -79,27 +79,63 @@ function unlockWebpage(event) {
     <br>
     <CLTHook on:message={unlockWebpage} />
     <br>
-    <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button>
+    <!-- <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button> -->
   </section>
   {#if unlocked}
   <section style="height: auto">
-    <h2> 1713: Bernoulli's Law of Large Numbers </h2> <br>
-    <p> (Wikipedia Text as Placeholder) In probability theory, the law of large numbers (LLN) is a mathematical theorem that states that the average of the results obtained from a large number of independent and identical random samples converges to the true value, if it exists. More formally, the LLN states that given a sample of independent and identically distributed values, the sample mean converges to. </p>
-    <p> The Italian mathematician Gerolamo Cardano (1501–1576) stated without proof that the accuracies of empirical statistics tend to improve with the number of trials. This was then formalized as a law of large numbers. A special form of the LLN (for a binary random variable) was first proved by Jacob Bernoulli. It took him over 20 years to develop a sufficiently rigorous mathematical proof which was published in his Ars Conjectandi (The Art of Conjecturing) in 1713. He named this his "Golden Theorem" but it became generally known as "Bernoulli's theorem". This should not be confused with Bernoulli's principle, named after Jacob Bernoulli's nephew Daniel Bernoulli. In 1837, S. D. Poisson further described it under the name "la loi des grands nombres" ("the law of large numbers"). Thereafter, it was known under both names, but the "law of large numbers" is most frequently used. </p>
-    <p> After Bernoulli and Poisson published their efforts, other mathematicians also contributed to refinement of the law, including Chebyshev, Markov, Borel, Cantelli, Kolmogorov and Khinchin. Markov showed that the law can apply to a random variable that does not have a finite variance under some other weaker assumption, and Khinchin showed in 1929 that if the series consists of independent identically distributed random variables, it suffices that the expected value exists for the weak law of large numbers to be true. These further studies have given rise to two prominent forms of the LLN. One is called the "weak" law and the other the "strong" law, in reference to two different modes of convergence of the cumulative sample means to the expected value; in particular, as explained below, the strong form implies the weak. </p>
+    <h2> 1713: Jakob Bernoulli's Law of Large Numbers </h2> <br>
+    <div class='square'>
+      <div><img src='images/jakob_bernoulli.jpg' alt='A Photograph of Jakob Bernoulli' width=200vw/></div>
+      <p>The Law of Large numbers states that the average value of a sample, or a set of data, will eventually converge to whatever the true average value is for that distribution. This property was first noted as early as 1501, by Italian mathematician Gerolamo Cordeno. However, the first formal proof of the Law was developed by Jakob Bernoulli over the course of twenty plus years. In 1713, it was published in his pioneering work <i>Ars Conjectandi</i>, or the Art of Conjecturing. </p>
+      <p>Bernoulli's version of the Law of Large Numbers applied only to Bernoulli trials, or flips of a weighted coin - a pattern we'll see repeated as we build up to the central limit theorem. In essence, it stated the following: Take a coin, with a probability of landing on heads <i>p</i>. Flip it some number of times, and calculate the percentage of times it landed on heads. Eventually, if you're willing to flip the coin a near-infinite number of times, you can guarantee that the margin of error between the percentage of times it landed heads and the true probability <i>p</i> is as small as you want. For example, you can guarantee that the percentage you compute is only one-millionth away from the true mean - you just might need to flip the coin billions of times.</p>
+      <p>Much later, a mathematician named Siméon Denis Poisson, perhaps most famous for the Poisson distribution, would prove that the same property is true for any random variable, not just coin flips. You can try this out in the simulation below: pick a distribution, and start sampling. You'll see that the sample mean always eventually gets close to the true mean. </p>
+    </div>
   </section>
   <section bind:this={LLN_sec} style="height: 80vh">
     <LLN svg_width={width_LLN} svg_height={height_LLN} />
   </section>
   <section>
     <h2> 1733: De Moivre's Coin Flips </h2>
+    <div class='square'>
+    <div><img src='images/abraham_de_moivre.jpg' alt='A Photograph of Abraham De Moivre' width=200vw height=254vw /></div>
+     <p>Great! Now we know that, for a infinite number of samples, the true mean converges to the sample mean. Unfortunately, infinite samples is a lot. In fact, it's impossible to take an infinite samples today, so we might just need to settle for "a lot" of samples. But without infinite samples we can't guarantee that our sample mean matches the true one - so how likely is it to at least be "pretty close" to the true mean?</p>
+     <p>This is the question that French mathematician Abraham de Moivre sought to answer in his work <i>Approximatio ad summam terminorum binomii (a+b)<sup>n</sup> in seriem expansi</i>. Only in the context of a <b>fair</b> coin flip, he approximated the probability that the number of heads would be <i>i</i> flips away from the expected number of heads based on the probability distribution. In doing so, De Moivre was the first mathematician to allude to the general principles of the CLT.</p>
+     <p>Some of the things De Moivre did look shockingly close to today's version of the CLT. His calculation is essentially correct, but because of differences in mathematical notation at the time, all of the integrals and exponentials were written in terms of series expansion. Additionally, De Moivre's goal wasn't to find the "distribution" of sample means at all, especially not at a limit, but just to be able to approximate the probability that the resulting number of heads were close to the expected, true proportion. The real work that defined the CLT would come later.</p>
+  </div>
   </section>
   <section>
-    <h2> 1812: Laplace's Approximation </h2>
+    <h2> 1800s-1850s: Laplace to Cauchy </h2>
+    <div class='square'>
+    <img src='images/pierre_simon_laplace.jpg' alt='A Painting of Pierre-Simon Laplace' style='float: left;' width='200vw'/>
+    <img src='images/augustin_louis_cauchy.jpg' alt='A Photograph of Augustin-Louis Cauchy'  width='200vw' />
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dapibus purus vitae nibh auctor, id dapibus magna porta. Praesent efficitur velit eu iaculis consequat. Donec rutrum dui ut justo pretium volutpat. Etiam id dictum sem. Aliquam quis lorem justo. Morbi rutrum sed quam quis sagittis. Fusce tempor volutpat aliquam. Vestibulum fringilla iaculis augue vel ullamcorper. Fusce at pharetra orci. Vivamus id diam dolor. Sed id turpis nec enim tempus porta eget sit amet ligula.</p>
+    </div>
     <Formula />
+    </section>
+  <section>
+    <h2> 1850s-1900s: Chebyshev and his students </h2>
+    <div class='square'>
+      <img src='images/chebyshev.png' alt='A Painting of Chebyshev' style='float:left;' width=200vw/>
+      <img src='images/aleksandr_lyapunov.jpg' alt='A Photograph of Aleksandr Lyapunov' width=200vw/>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed turpis faucibus, ullamcorper dolor non, fringilla metus. Aliquam erat volutpat. Aenean at accumsan sem. Curabitur ac erat dolor. Mauris ut scelerisque sapien. Cras pellentesque vulputate arcu. Ut sodales eros ac purus sagittis, sed sodales lorem tempor.</p>
+      <p>Fusce interdum posuere tempor. Maecenas a molestie est. Nulla a sem pharetra, porta tortor eu, tempor quam. Quisque pretium erat arcu, nec rutrum turpis dictum et. Suspendisse interdum erat id lobortis ullamcorper. Proin mi leo, convallis convallis pellentesque a, porttitor quis elit. Vestibulum quam nibh, porttitor et tempor a, consectetur nec mi. Nam id.</p>
+    </div>
   </section>
   <section>
-    <h2> 1850s-1900s: Cauchy and the Russians </h2>
+    <h2> Acknowledgements </h2>
+    <ul>
+    <li> Thank you to Sam Lau for teaching and all the TAs for helping to run the course! </li>
+    <li> Motivated by Hans Fischer's book "<a href="https://link.springer.com/book/10.1007/978-0-387-87857-7">History of the Central Limit Theorem</a>" (Chapters 1 and 2) </li>
+    <li> Inspired by Grant Sanderson's (3Blue1Brown on Youtube) Video "<a href="https://www.youtube.com/watch?v=zeJD6dqJ5lo&t=975s&pp=ygUPM2JsdWUxYnJvd24gY2x0">But What is the Central Limit Theorem?</a>" </li>
+    <li> Dataset used for Movie Reviews: <p style='text-indent:-20px; padding-left:20px; margin:0;'> Harper, F. Maxwell, and Joseph A. Konstan. &quot;The movielens datasets: History and context.&quot;&nbsp;<em>Acm transactions on interactive intelligent systems (tiis)</em>&nbsp;5.4 (2015): 1-19.</p></li>
+    <li>
+      Implementation References: 
+      <ul>
+      <li> <a href='https://github.com/ErnaneJ/svelte-star-rating'>svelte-star-rating</a> by <a href='https://github.com/ErnaneJ'>Ernane Ferreria</a></li>
+      <li> <a href='https://blog.devgenius.io/d3-js-visualize-a-mathematical-function-d0c164ddcf2c'>D3.Js: Visualize a Matematical Function</a> by <a href='https://medium.com/@adyaksa.w'>Adyaksa W</a></li>
+     </ul>
+    </li>
+    </ul>
   </section>
   {/if}
 </div>
@@ -162,6 +198,16 @@ function unlockWebpage(event) {
   p {
     text-align: justify;
     text-indent: 50px;
+  }
+
+  li {
+    text-align: left;
+  }
+
+  img {
+    float: right;
+    margin: 5px;
+    padding: 10px;
   }
 
   section {
