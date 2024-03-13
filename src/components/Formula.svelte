@@ -26,6 +26,7 @@ let xMin = -4; // graph limits in terms of axis coordinates
 let xMax = 4;
 let yMin = -1;
 let yMax = 4
+let function_name = '';
 
 let xScale = d3.scaleLinear([xMin, xMax], [0, width]) // function that maps math coordinates to display coords
 let yScale = d3.scaleLinear([yMin, yMax], [height, 0])
@@ -41,24 +42,44 @@ let line = d3.line() // I think this defines like the physical line object that 
 // variable that defines which function we're plotting
 let function_index = 0;
 
+function plot_with_func(func) {
+  formula_graph.selectAll('path.function').remove()
+    formula_graph.append("path")
+          .datum(graphFunction(-4, 4, 0.05, func))
+          .attr("class", "function")
+          .attr("fill", "none")
+          .attr("stroke", "black")
+          .attr("stroke-width", 2)
+          .attr("d", line);
+}
+
 // the "main" function that's called whenver the button is pressed. Will change the graph to the next item
 function changeFunction() {
     function_index += 1;
     if(function_index == 1) {
-        formula_graph.append("path")
-            .datum(graphFunction(-4, 4, 0.05, exponential))
-            .attr("class", "function")
-            .attr("fill", "none")
-            .attr("stroke", "#CC00B3")
-            .attr("stroke-width", 1)
-            .attr("d", line);
+      plot_with_func(exponential)
+      function_name = 'f(x) = e<sup>x</sup>'
+    }
+    if(function_index == 2) {
+      plot_with_func(neg_exponential)
+      function_name = 'f(x) = -e<sup>x</sup>'
+    }
+    if(function_index == 3) {
+      plot_with_func(square_neg)
+      function_name = 'f(x) = -e<sup>x<sup>2</sup></sup>'
     }
 }
 
 // takes in one x coordinate, outputs the y coordinate
 // we want to have a bunch of these for each function from the 3blue1brown video
 function exponential(x) {
-    return Math.E ** x
+    return Math.E ** x - 1
+}
+function neg_exponential(x) {
+  return (Math.E ** (-x)) - 1
+}
+function square_neg(x) {
+  return (Math.E ** -(x**2)) - 1
 }
 
 // calculates f(x) for every x in range(stard_idx, end_idx, step)
@@ -100,7 +121,9 @@ onMount(() => {
     formula_graph.selectAll('g.tick text').filter(function() {
             return d3.select(this).text() === "0";
         }).remove()
+
 })
+
 </script>
 
 <!-- placing the svg in the html section -->
