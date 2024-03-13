@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import LLN from "./LLN.svelte"
 import CLTHook from "./CLT_hook.svelte"
 import Formula from "./Formula.svelte"
+import Hist from "./Hist.svelte"
 import { onMount } from 'svelte';
 
 let count, index, offset, progress;
@@ -81,6 +82,7 @@ function unlockWebpage(event) {
     <br>
     <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button>
   </section>
+
   {#if unlocked}
   <section style="height: auto">
     <h2> 1713: Bernoulli's Law of Large Numbers </h2> <br>
@@ -91,13 +93,17 @@ function unlockWebpage(event) {
   <section bind:this={LLN_sec} style="height: 80vh">
     <LLN svg_width={width_LLN} svg_height={height_LLN} />
   </section>
+
   <section>
     <h2> 1733: De Moivre's Coin Flips </h2>
+    <Hist />
   </section>
+
   <section>
     <h2> 1812: Laplace's Approximation </h2>
     <Formula />
   </section>
+
   <section>
     <h2> 1850s-1900s: Cauchy and the Russians </h2>
   </section>
@@ -121,12 +127,12 @@ function unlockWebpage(event) {
     position: relative;
     /* outline: red solid 3px; */
   }
-
+/* 
   .progress-bars {
     position: absolute;
     background: rgba(170, 51, 120, 0.4);
     visibility: visible;
-  }
+  } */
 
   * {
     font-family: 'Georgia', serif;
