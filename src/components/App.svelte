@@ -80,7 +80,7 @@ function unlockWebpage(event) {
     <br>
     <CLTHook on:message={unlockWebpage} />
     <br>
-    <!-- <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button> -->
+    <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button>
   </section>
 
   {#if unlocked}
@@ -99,13 +99,13 @@ function unlockWebpage(event) {
 
   <section>
     <h2> 1733: De Moivre's Coin Flips </h2>
-    <Hist />
     <div class='square'>
     <div><img src='images/abraham_de_moivre.jpg' alt='A Photograph of Abraham De Moivre' width=200vw height=254vw /></div>
      <p>Great! Now we know that, for a infinite number of samples, the true mean converges to the sample mean. Unfortunately, infinite samples is a lot. In fact, it's impossible to take an infinite samples today, so we might just need to settle for "a lot" of samples. But without infinite samples we can't guarantee that our sample mean matches the true one - so how likely is it to at least be "pretty close" to the true mean?</p>
      <p>This is the question that French mathematician Abraham de Moivre sought to answer in his work <i>Approximatio ad summam terminorum binomii (a+b)<sup>n</sup> in seriem expansi</i>. Only in the context of a <b>fair</b> coin flip, he approximated the probability that the number of heads would be <i>i</i> flips away from the expected number of heads based on the probability distribution. In doing so, De Moivre was the first mathematician to allude to the general principles of the CLT.</p>
      <p>Some of the things De Moivre did look shockingly close to today's version of the CLT. His calculation is essentially correct, but because of differences in mathematical notation at the time, all of the integrals and exponentials were written in terms of series expansion. Additionally, De Moivre's goal wasn't to find the "distribution" of sample means at all, especially not at a limit, but just to be able to approximate the probability that the resulting number of heads were close to the expected, true proportion. The real work that defined the CLT would come later.</p>
-  </div>
+     <Hist />
+    </div>
   </section>
 
   <section>
