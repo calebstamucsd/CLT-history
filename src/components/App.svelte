@@ -80,7 +80,7 @@ function unlockWebpage(event) {
     <br>
     <CLTHook on:message={unlockWebpage} />
     <br>
-    <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button>
+    <!-- <button on:click={unlockWebpage}> Bypass Introduction (for testing)</button> -->
   </section>
 
   {#if unlocked}
@@ -113,17 +113,23 @@ function unlockWebpage(event) {
     <div class='square'>
     <img src='images/pierre_simon_laplace.jpg' alt='A Painting of Pierre-Simon Laplace' style='float: left;' width='200vw'/>
     <img src='images/augustin_louis_cauchy.jpg' alt='A Photograph of Augustin-Louis Cauchy'  width='200vw' />
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dapibus purus vitae nibh auctor, id dapibus magna porta. Praesent efficitur velit eu iaculis consequat. Donec rutrum dui ut justo pretium volutpat. Etiam id dictum sem. Aliquam quis lorem justo. Morbi rutrum sed quam quis sagittis. Fusce tempor volutpat aliquam. Vestibulum fringilla iaculis augue vel ullamcorper. Fusce at pharetra orci. Vivamus id diam dolor. Sed id turpis nec enim tempus porta eget sit amet ligula.</p>
+    <p>De Moivre's discoveries may have in fact been a bit <i>too</i> ahead of their time: his work was not properly recognized until long after his passing. On the other hand, Dutch mathematician Henk Tijms called Pierre-Simon Laplace the man who "rescued it [the Central Limit Theorem] from obscurity in his monumental work <i>Théorie analytique des probabilité</i>", published in 1812.</p>
+    <p>The contents of Laplace's work are hard to visually separate from De Moivre's. Instead, the devil is in the details. The key difference between Laplace's writing and De Moivre's was that De Moivre only ever sought to estimate individual probabilities. On the other hand, Laplace gave a proof that approximated the binomial distribution with the normal distribution as a whole.</p>
+    <p>More, Laplace's publication revolutionized the field of statistics. Before <i>Théorie analytique des probabilité</i>, statistical methods were viewed as tools for other fields of science - biology, sociology, physics. However, the work Laplace did was too numerically complicated to be directly useful to these fields at the time. Rather, he pondered the nature of randomness itself, describing the problems he worked on as “the most delicate, the most difficult, and the most useful" of statistical theory.</p>
+    <p>Laplace's work would be expanded on in subsequent years. Siméon Denis Poisson contributed by providing a proof of the theorem generally for "choses", and early version of the mathematical object now called a random variable, and worked towards a better understanding of the theorem's validity via counterexamples. </p>
+    <p>Contributions towards the CLT by mathematicians like Dirchlet and Augustin-Louis Cauchy were representative of a further shift in the mathematical school of thought. They viewed mathematics in an even purer, more rigorous sense than Laplace, and Cauchy was known to be a frequent critic of Laplace's methods. A series of debates with the more traditional mathematician Irénée-Jules Bienaymé led Cauchy to a new formulation for a version of the CLT, which was treated with more modern rigor. Cauchy's work laid the foundations for a more modern treatment of the CLT.</p>
+    <p>At this point in time, the formula for the normal curve was relatively agreed upon, and the properties of the central limit theorem had been proven under varying extents for varying assumpions. But the formula for the normal curve is a littler weird - how is it that <i>e</i> and π, two of the most powerful mathematical constants, just so happen to appear in this formula?</p>
     </div>
     <Formula />
     </section>
   <section>
-    <h2> 1850s-1900s: Chebyshev and his students </h2>
+    <h2> 1850s-1900s: Chebyshev, his students, and the future. </h2>
     <div class='square'>
       <img src='images/chebyshev.png' alt='A Painting of Chebyshev' style='float:left;' width=200vw/>
       <img src='images/aleksandr_lyapunov.jpg' alt='A Photograph of Aleksandr Lyapunov' width=200vw/>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed turpis faucibus, ullamcorper dolor non, fringilla metus. Aliquam erat volutpat. Aenean at accumsan sem. Curabitur ac erat dolor. Mauris ut scelerisque sapien. Cras pellentesque vulputate arcu. Ut sodales eros ac purus sagittis, sed sodales lorem tempor.</p>
-      <p>Fusce interdum posuere tempor. Maecenas a molestie est. Nulla a sem pharetra, porta tortor eu, tempor quam. Quisque pretium erat arcu, nec rutrum turpis dictum et. Suspendisse interdum erat id lobortis ullamcorper. Proin mi leo, convallis convallis pellentesque a, porttitor quis elit. Vestibulum quam nibh, porttitor et tempor a, consectetur nec mi. Nam id.</p>
+      <p>To continue along our walk through the history of probability theory, we must visit the Soviet Union and one man in particular: Pafnuty Chebyshev. In the Soviet Union, practical science was prized upon all else. Chebyshev was known for his ability to turn theoretical mathematics into results, and was considered the founder of the "St. Petersburg" school of thought. He, along with his students (in particular, Andrey Markov and Aleksandr Lyapunov), brought great advancements to probability theory and statistics. In particular, they approached the problems with rigor that is suitable to today's standards.</p>
+      <p>Due to the more advanced and abstract nature of their work, it's difficult to visualize the contributions made by Russian probability theorists. However, they represent the most modern version of the mathematical trend we have described: the pursuit of more rigor. Chebyshev brought both the Law of Large Numbers and the Central Limit Theorem closer to today's standards. Later, his student Lyapunov would become the man creditied for the first full, rigorous proof of the Central Limit theorem, done in 1901.</p>
+      <p>The Central Limit Theorem is aptly named. It sits at the center of modern statistical thought and inference. The whole of modern statistics (of the frequentist variety, at least) and data science rests upon it. The principles of CLT still lay the baseline for modern scientific revolutions such as statistical machine learning and deep learning. Therefore, aw we, as statisticians, mathematicians, and computer and data scientists, rush further into the unknown, we should be sure not to leave it behind. </p>
     </div>
   </section>
 

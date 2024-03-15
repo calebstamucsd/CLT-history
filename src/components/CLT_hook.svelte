@@ -91,22 +91,22 @@
     async function slide_3() {
         let mean_list = [user_mean];
         inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
-        await wait(1000);
+        await wait(2000);
         slide_3_text_1 = 'Now, we\'ll add more observations. Remember - each addition to this plot represents the AVERAGE of 50 ratings, not just one person\'s review.'
-        await wait(1000);
+        await wait(2000);
         for(let i = 5; i < 501; i += 5) {
             mean_hist.selectAll("g.axis").remove()
             meanyMax = i;
             inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
             await wait((250/Math.sqrt(i)) + 15);
         }
-        await wait(1000);
-        for(let i = 0; i < 800; i++) {
+        await wait(2000);
+        for(let i = 0; i < 1200; i++) {
             mean_list.push(sample_mean(50))
             inner_plot(mean_hist, binList(mean_list, 0.1), mean_bar_width, meanxScale, meanyScale);
-            await(wait(2));
+            await wait(2);
         }
-        await wait(500);
+        await wait(1000);
         slide_3_text_2 = "What an interesting curve! You could even say it looks bell-shaped..."
         slide_3_button = false;
     }
@@ -185,8 +185,9 @@
     }
 
     async function plot_histogram(n) {
-        await wait(400);
+        await wait(1500);
         slide_2_text_0 = 'Let\'s see what some other movie-goers thought about it.';
+        await wait(1500);
         let data_dict = {0.5:0, 1:0, 1.5:0, 2:0, 2.5:0, 3:0, 3.5:0, 4:0, 4.5:0, 5:0}
         for(let i = 0; i<n; i++) {
             let samp = sampleOne()
@@ -197,13 +198,13 @@
             inner_plot(histogram, data_list, bar_width, xScale, yScale);
 
             samplingCount += 1;
-            await wait(25);
+            await wait(50);
         }
-        await wait(400);
+        await wait(800);
         slide_2_text_1 = "And now...";
-        await wait(750);
+        await wait(1500);
         slide_2_text_2 = "we'll add you!";
-        await wait(500);
+        await wait(1500);
         data_dict[user_score]++;
         samplingCount++;
 
@@ -218,9 +219,9 @@
             samps += (value);
         }
         user_mean = (sum / samps)
-        await wait(750);
+        await wait(1000);
         slide_2_text_3 = `The average rating from this sample is ${user_mean.toFixed(2)} stars.`
-        await wait(1250);
+        await wait(2000);
         slide_2_text_4 = "But wait. Doesn't our sample seem a little small? Let's take some more to get a better picture."
         slide_2_button = false;
     }

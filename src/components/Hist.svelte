@@ -308,6 +308,66 @@ onMount(() => {
   .attr("id", "HyAxis")
   .call(yAxis)
 
+  Hist.append("text")
+  .attr("class", "x-label")
+  .attr("text-anchor", "middle")
+  .attr("x", width / 2)
+  .attr("y", height + 35)
+  .text("Number of Heads");
+  Hist.append("text")
+  .attr("class", "y-label")
+  .attr("text-anchor", "middle")
+  .attr("y", -35)
+  .attr("x", -height / 2)
+  .attr("transform", "rotate(-90)")
+  .html("Density")
+
+    // creating CoinFlip container
+  Hist.append('rect')
+  .attr('x', width-170)
+  .attr('y', -20)
+  .attr('width', 170)
+  .attr('height', 54)
+  .attr('fill-opacity', 0.5)
+
+  Hist.append('rect')
+  .attr('x', width-160)
+  .attr('y', -10)
+  .attr('width', 10)
+  .attr('height', 10)
+  .attr('fill', '#628575')
+  .attr('stroke', 'white')
+
+  // heads count text box
+  Hist.append("text")
+    .attr("id", "heads_text")
+    .attr("x",  width-140)
+    .attr("y",  -5)
+    .attr("dy", ".35em")
+    .attr('text-anchor', 'left')
+    .style("fill", "white")
+    .text("De Moivre's Guess")
+    .attr('color', 'white')
+
+  Hist.append('rect')
+  .attr('x', width-160)
+  .attr('y', 10)
+  .attr('width', 10)
+  .attr('height', 10)
+  .attr('fill', '#CD7F32')
+  .attr('stroke', 'white')
+
+  // heads count text box
+  Hist.append("text")
+    .attr("id", "heads_text")
+    .attr("x",  width-140)
+    .attr("y",  15)
+    .attr("dy", ".35em")
+    .attr('text-anchor', 'left')
+    .style("fill", "white")
+    .text("Our Results")
+    .attr('color', 'white')
+
   // got rid of the tick marks for zero because they looked bad (comment this out to see what I mean)
   Hist.selectAll('g.tick text').filter(function() {
         return d3.select(this).text() === "0";
@@ -338,6 +398,13 @@ onMount(() => {
   .attr("class", "y-axis")
   .attr("transform", `translate(${0},${CFyScale(CFyMax)})`)
   .call(CFyAxis)
+  CoinFlip.append("text")
+  .attr("class", "y-label")
+  .attr("text-anchor", "middle")
+  .attr("y", -35)
+  .attr("x", -CFheight / 2)
+  .attr("transform", "rotate(-90)")
+  .html("Count")
 
   // got rid of the tick marks for zero because they looked bad (comment this out to see what I mean)
   CoinFlip.selectAll('g.tick text').filter(function() {
